@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>To Do App</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <div class="h-screen w-full flex flex-col justify-between">
+
+        <div class="bg-gray-900 text-white py-4 font-[Montserrat] font-semibold text-center">
+            To Do App
+        </div>
+
+        {% block body %}
+        {% endblock %}
+
+
+        <div class="text-center p-4 font-semibold bg-gray-900 text-white">
+            Koyo © 2022
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

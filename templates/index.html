@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="w-full flex flex-col gap-10">
+
+    <div>
+        <form action="/" method="POST">
+            <div class="text-center flex flex-col md:flex-row justify-center gap-5">
+
+                <div>
+                    <input type=" text" id="content" name="content" required
+                        class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-3">
+                </div>
+
+                <div class="flex flex-row gap-2 justify-center">
+                    <button type="submit"
+                        class="bg-blue-400 hover:bg-blue-300 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-blue-400 rounded text-xs sm:text-md">
+                        Add Task
+                    </button>
+
+                    <a href="#" type="submit"
+                        class="bg-red-400 hover:bg-red-300 text-white font-bold py-2 px-4 border-b-4 border-red-500 hover:border-red-400 rounded text-xs sm:text-md flex flex-col justify-center">
+                        Clear Completed
+                    </a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="flex flex-col justify-center items-center">
+
+        {% if tasks|length < 1 %} <div><img src="{{ url_for('static', filename='assets/sleep.png') }}"
+                class="w-3/4 sm:w-1/4">
+            <p class="sm:mt-4 text-gray-600 font-bold text-sm sm:text-md">
+                No Due Tasks! Take Rest Now
+            </p>
+    </div>
+
+
+    {% else %}
+
+    <div>
+        <table class="w-full text-sm text-gray-400 text-center">
+            <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                <tr>
+                    <th scope="col" class="py-3 px-6">
+                        Task name
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Date Created
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Time Created
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Status
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+
+            {% for task in tasks %}
+            <tr>
+                <td class="text-center">{{ task.content }}</td>
+                <td class="text-center">{{ task.date_created.date().strftime("%d %B %Y") }}</td>
+                <td class="text-center">{{ task.date_created.time().strftime("%X") }}</td>
+                <td class="text-center">
+                    {% if task.completed %} Completed
+                    {% else %} Incomplete
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="flex flex-row justify-around">
+
+                        <a href="/update/{{task.id}}" target="_top"
+                            class="shadow-xl bg-blue-400 hover:bg-blue-300 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-blue-400 rounded">
+                            <i class="fa fa-edit"></i>
+                        </a>
+
+                        <a href="/complete/{{task.id}}"
+                            class="shadow-xl bg-green-400 hover:bg-green-300 text-white font-bold py-2 px-4 border-b-4 border-green-500 hover:border-green-400 rounded">
+                            <i class="fa fa-check"></i>
+                        </a>
+
+
+                        <a href="/delete/{{task.id}}"
+                            class="shadow-xl bg-red-400 hover:bg-red-300 text-white font-bold py-2 px-4 border-b-4 border-red-500 hover:border-red-400 rounded">
+                            <i class="fa fa-trash"></i>
+                        </a>
+
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+</div>
+{% endblock %}
