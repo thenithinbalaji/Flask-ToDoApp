@@ -3,34 +3,40 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import pytz
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
 
-    d = datetime.now()
-    timezone = pytz.timezone("Asia/Kolkata")
-    d_aware = timezone.localize(d)
-
-    date_created = db.Column(db.DateTime, default=d)
+    date_created = db.Column(db.DateTime)
     completed = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return "<Task %r>" % self.id
 
 
+app = Flask(__name__)
+app.config["SECRET_KEY"] = "hello there"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
+
 @app.route("/", methods=["POST", "GET"])
 def index():
     if request.method == "POST":
+        d = datetime.now()
+        timezone = pytz.timezone("Asia/Kolkata")
+        d_aware = timezone.localize(d)
         task_content = request.form["content"].strip()
-        new_task = Todo(content=task_content[:25])
+        new_task = Todo(content=task_content[:25], date_created=d_aware)
 
-        if len(task_content) > 2:
+        if len(task_content) > 1:
             try:
                 db.session.add(new_task)
                 db.session.commit()
