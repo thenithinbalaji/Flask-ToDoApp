@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="w-full flex flex-col gap-10">
-
+<div class="w-full flex flex-col min-h-screen justify-center gap-10 my-5 sm:my-10">
     <div>
         <form action="/" method="POST">
             <div class="text-center flex flex-col md:flex-row justify-center gap-5">
-
                 <div>
-                    <input type=" text" id="content" name="content" required
-                        class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-3">
+                    <input type="text" id="content" name="content" required
+                        class="bg-white border border-gray-300 text-sm rounded-lg p-3" />
                 </div>
 
                 <div class="flex flex-row gap-2 justify-center">
@@ -17,7 +15,7 @@
                         Add Task
                     </button>
 
-                    <a href="#" type="submit"
+                    <a href="\clearcomp" type="submit"
                         class="bg-red-400 hover:bg-red-300 text-white font-bold py-2 px-4 border-b-4 border-red-500 hover:border-red-400 rounded text-xs sm:text-md flex flex-col justify-center">
                         Clear Completed
                     </a>
@@ -25,79 +23,93 @@
 
             </div>
         </form>
+
+        <div class="flex flex-row gap-2 justify-center mt-5 px-2">
+            <a href="\showcomp" type="submit"
+                class="bg-fuchsia-400 hover:bg-fuchsia-300 text-white font-bold py-2 px-4 border-b-4 border-fuchsia-500 hover:border-fuchsia-400 rounded text-xs sm:text-md flex flex-col justify-center">
+                Show Completed
+            </a>
+
+            <a href="\showpend" type="submit"
+                class="bg-fuchsia-400 hover:bg-fuchsia-300 text-white font-bold py-2 px-4 border-b-4 border-fuchsia-500 hover:border-fuchsia-400 rounded text-xs sm:text-md flex flex-col justify-center">
+                Show Pending
+            </a>
+
+            <a href="\" type="submit"
+                class="bg-purple-400 hover:bg-purple-300 text-white font-bold py-2 px-4 border-b-4 border-purple-500 hover:border-purple-400 rounded text-xs sm:text-md flex flex-col justify-center">
+                Show All
+            </a>
+        </div>
     </div>
 
-    <div class="flex flex-col justify-center items-center">
-
-        {% if tasks|length < 1 %} <div><img src="{{ url_for('static', filename='assets/sleep.png') }}"
-                class="w-3/4 sm:w-1/4">
+    <div class="flex flex-col w-full justify-center items-center">
+        {% if tasks|length < 1 %} <!-- <div> -->
+            <img src="{{ url_for('static', filename='assets/sleep.png') }}" class="w-3/4 sm:w-1/4" />
             <p class="sm:mt-4 text-gray-600 font-bold text-sm sm:text-md">
-                No Due Tasks! Take Rest Now
+                No Tasks here! Take Rest Now
             </p>
+            <!-- </div> -->
+
+            {% else %}
+
+            <div class="w-full overflow-x-scroll sm:overflow-auto">
+                <div class="flex flex-row justify-center">
+                    <table class="text-sm text-gray-500 text-center">
+                        <thead class="min-w-full text-xs uppercase bg-gray-700 text-gray-400">
+                            <tr>
+                                <th scope="col" class="py-3 px-6">Task</th>
+                                <th scope="col" class="py-3 px-6">Status</th>
+                                <th scope="col" class="py-3 px-6">Action</th>
+                            </tr>
+                        </thead>
+
+                        {% for task in tasks %}
+                        {% if task.completed %} <tr class="border-b bg-green-200"> {% else %}
+                        <tr class="border-b bg-white"> {% endif %}
+
+                            <td class="text-center p-5">
+                                <b>{{ task.content.upper() }}</b> <br /><br />
+                                {{ task.date_created.date().strftime("%d-%m-%y") }} <br />
+                                {{ task.date_created.time().strftime("%I:%M %p") }}
+                            </td>
+
+                            <td class="text-center">
+                                {% if task.completed %} Completed {% else %} Pending {% endif %}
+                            </td>
+
+                            <td class="p-5">
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <a href="" onclick="updatename('{{task.id}}','{{task.content}}')" target="_self"
+                                        class="shadow-xl bg-blue-400 hover:bg-blue-300 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-blue-400 rounded">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+
+                                    {% if task.completed %}
+                                    <a href="/incomplete/{{task.id}}"
+                                        class="shadow-xl bg-orange-400 hover:bg-orange-300 text-white font-bold py-2 px-4 border-b-4 border-orange-500 hover:border-orange-400 rounded">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+
+                                    {% else %}
+                                    <a href="/complete/{{task.id}}"
+                                        class="shadow-xl bg-green-400 hover:bg-green-300 text-white font-bold py-2 px-4 border-b-4 border-green-500 hover:border-green-400 rounded">
+                                        <i class="fa fa-check"></i>
+                                    </a>
+
+                                    {% endif %}
+
+                                    <a href="/delete/{{task.id}}"
+                                        class="shadow-xl bg-red-400 hover:bg-red-300 text-white font-bold py-2 px-4 border-b-4 border-red-500 hover:border-red-400 rounded">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            {% endif %}
     </div>
-
-
-    {% else %}
-
-    <div>
-        <table class="w-full text-sm text-gray-400 text-center">
-            <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                <tr>
-                    <th scope="col" class="py-3 px-6">
-                        Task name
-                    </th>
-                    <th scope="col" class="py-3 px-6">
-                        Date Created
-                    </th>
-                    <th scope="col" class="py-3 px-6">
-                        Time Created
-                    </th>
-                    <th scope="col" class="py-3 px-6">
-                        Status
-                    </th>
-                    <th scope="col" class="py-3 px-6">
-                        Action
-                    </th>
-                </tr>
-            </thead>
-
-            {% for task in tasks %}
-            <tr>
-                <td class="text-center">{{ task.content }}</td>
-                <td class="text-center">{{ task.date_created.date().strftime("%d %B %Y") }}</td>
-                <td class="text-center">{{ task.date_created.time().strftime("%X") }}</td>
-                <td class="text-center">
-                    {% if task.completed %} Completed
-                    {% else %} Incomplete
-                    {% endif %}
-                </td>
-                <td>
-                    <div class="flex flex-row justify-around">
-
-                        <a href="/update/{{task.id}}" target="_top"
-                            class="shadow-xl bg-blue-400 hover:bg-blue-300 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-blue-400 rounded">
-                            <i class="fa fa-edit"></i>
-                        </a>
-
-                        <a href="/complete/{{task.id}}"
-                            class="shadow-xl bg-green-400 hover:bg-green-300 text-white font-bold py-2 px-4 border-b-4 border-green-500 hover:border-green-400 rounded">
-                            <i class="fa fa-check"></i>
-                        </a>
-
-
-                        <a href="/delete/{{task.id}}"
-                            class="shadow-xl bg-red-400 hover:bg-red-300 text-white font-bold py-2 px-4 border-b-4 border-red-500 hover:border-red-400 rounded">
-                            <i class="fa fa-trash"></i>
-                        </a>
-
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% endif %}
-    </div>
-</div>
-
 </div>
 {% endblock %}
