@@ -1,6 +1,6 @@
 # Getting Started with To Do App
 
-This project was created using [Flask](https://flask.palletsprojects.com/en/2.2.x/) for Koyo Company.
+This project was created using [Flask](https://flask.palletsprojects.com/en/2.2.x/) for Koyo Company as a part of my technical interview. 
  <p align="center">
   <a href="#">
     <img src="https://skillicons.dev/icons?i=html,tailwind,sqlite,flask" />
